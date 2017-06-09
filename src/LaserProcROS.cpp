@@ -35,23 +35,26 @@
 
 using namespace laser_proc;
   
-LaserProcROS::LaserProcROS(ros::NodeHandle& n, ros::NodeHandle& pnh):nh_(n){
+LaserProcROS::LaserProcROS(rclcpp::node::Node::SharedPtr n, rclcpp::node::Node::SharedPtr pnh):nh_(n){
   boost::mutex::scoped_lock lock(connect_mutex_);
   
   // Lazy subscription to multi echo topic
-  pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10, boost::bind(&LaserProcROS::connectCb, this, _1), boost::bind(&LaserProcROS::disconnectCb, this, _1), ros::VoidPtr(), false, false);
+  pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10);
+
+  std::function<void(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr)> callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
+  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", 10, callback);
 }
 
 LaserProcROS::~LaserProcROS(){
-  sub_.shutdown();
 }
 
 
 
-void LaserProcROS::scanCb(const sensor_msgs::MultiEchoLaserScanConstPtr& msg) const{
+void LaserProcROS::scanCb(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const{
   pub_.publish(msg);
 }
 
+/*
 void LaserProcROS::connectCb(const ros::SingleSubscriberPublisher& pub){
   boost::mutex::scoped_lock lock(connect_mutex_);
   if (!sub_ && pub_.getNumSubscribers() > 0) {
@@ -67,3 +70,4 @@ void LaserProcROS::disconnectCb(const ros::SingleSubscriberPublisher& pub){
     sub_.shutdown();
   }
 }
+*/

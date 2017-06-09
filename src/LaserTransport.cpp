@@ -35,15 +35,11 @@
 
 namespace laser_proc {
 
-LaserPublisher LaserTransport::advertiseLaser(ros::NodeHandle& nh, uint32_t queue_size, bool latch){
-  return advertiseLaser(nh, queue_size, ros::SubscriberStatusCallback(), ros::SubscriberStatusCallback(), ros::VoidPtr(), latch);
-}
-
-LaserPublisher LaserTransport::advertiseLaser(ros::NodeHandle& nh, uint32_t queue_size,
-                                              const ros::SubscriberStatusCallback& connect_cb,
+LaserPublisher LaserTransport::advertiseLaser(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+                                              /*const ros::SubscriberStatusCallback& connect_cb,
                                               const ros::SubscriberStatusCallback& disconnect_cb,
-                                              const ros::VoidPtr& tracked_object, bool latch, bool publish_echoes){
-  return LaserPublisher(nh, queue_size, connect_cb, disconnect_cb, tracked_object, latch, publish_echoes);
+                                              const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes){
+  return LaserPublisher(nh, queue_size, /*connect_cb, disconnect_cb, tracked_object, latch,*/ publish_echoes);
 }
 
 } //namespace laser_proc

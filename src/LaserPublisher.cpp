@@ -35,7 +35,7 @@
 
 namespace laser_proc {
 
-typedef sensor_msgs::LaserScanPtr (*PublishFunction)(const sensor_msgs::MultiEchoLaserScan& msg);
+typedef sensor_msgs::msg::LaserScan::SharedPtr (*PublishFunction)(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
 struct LaserPublisher::Impl
 {
@@ -58,107 +58,119 @@ struct LaserPublisher::Impl
   {
     if (!unadvertised_) {
       unadvertised_ = true;
-      for(size_t i = 0; i < pubs_.size(); i++){
-        pubs_[i].shutdown();
-      }
     }
   }
 
-  ros::Publisher echo_pub_;
-  std::vector<ros::Publisher> pubs_;
+  rclcpp::publisher::Publisher<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr echo_pub_;
+  std::vector<rclcpp::publisher::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr> pubs_;
   std::vector<PublishFunction> functs_;
   bool unadvertised_;
 };
 
 ///< @TODO Make a static class that creates these
-LaserPublisher::LaserPublisher(ros::NodeHandle& nh, uint32_t queue_size,
-                                 const ros::SubscriberStatusCallback& connect_cb,
+LaserPublisher::LaserPublisher(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+                                 /*const ros::SubscriberStatusCallback& connect_cb,
                                  const ros::SubscriberStatusCallback& disconnect_cb,
-                                 const ros::VoidPtr& tracked_object, bool latch, bool publish_echoes)
+                                 const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes)
   : impl_(new Impl)
 {
   if(publish_echoes){
-    impl_->echo_pub_ = nh.advertise<sensor_msgs::MultiEchoLaserScan>("echoes", queue_size, connect_cb, disconnect_cb, tracked_object, latch);
+    //impl_->echo_pub_ = nh->create_publisher<sensor_msgs::msg::MultiEchoLaserScan>("echoes", queue_size, connect_cb, disconnect_cb, tracked_object, latch);
+    impl_->echo_pub_ = nh->create_publisher<sensor_msgs::msg::MultiEchoLaserScan>("echoes", queue_size);
   }
-  impl_->pubs_.push_back(nh.advertise<sensor_msgs::LaserScan>("first", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  //impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("first", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("first", queue_size));
   impl_->functs_.push_back(laser_proc::LaserProc::getFirstScan);
-  impl_->pubs_.push_back(nh.advertise<sensor_msgs::LaserScan>("last", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  //impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("last", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("last", queue_size));
   impl_->functs_.push_back(laser_proc::LaserProc::getLastScan);
-  impl_->pubs_.push_back(nh.advertise<sensor_msgs::LaserScan>("most_intense", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  //impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("most_intense", queue_size, connect_cb, disconnect_cb, tracked_object, latch));
+  impl_->pubs_.push_back(nh->create_publisher<sensor_msgs::msg::LaserScan>("most_intense", queue_size));
   impl_->functs_.push_back(laser_proc::LaserProc::getMostIntenseScan);
 }
 
 uint32_t LaserPublisher::getNumSubscribers() const
 {
+  // TODO: no way to do this in ros2 yet
+  return 0;
+/*
   if (impl_ && impl_->isValid()){
-    uint32_t num = impl_->echo_pub_.getNumSubscribers();
+    uint32_t num = impl_->echo_pub_->getNumSubscribers();
     for(size_t i = 0; i < impl_->pubs_.size(); i++){
       num = num + impl_->pubs_[i].getNumSubscribers();
     }
     return num;
   }
   return 0;
+*/
 }
 
 std::vector<std::string> LaserPublisher::getTopics() const
 {
   std::vector<std::string> topics;
-  topics.push_back(impl_->echo_pub_.getTopic());
+  topics.push_back(impl_->echo_pub_->get_topic_name());
   if (impl_ && impl_->isValid()){
     for(size_t i = 0; i < impl_->pubs_.size(); i++){
-      topics.push_back(impl_->pubs_[i].getTopic());
+      topics.push_back(impl_->pubs_[i]->get_topic_name());
     }
   }
   return topics;
 }
 
-void LaserPublisher::publish(const sensor_msgs::MultiEchoLaserScan& msg) const
+void LaserPublisher::publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const
 {
   if (!impl_ || !impl_->isValid()) {
-    ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
+    //ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
+    std::cerr << "Call to publish() on an invalid image_transport::LaserPublisher" << std::endl;
     return;
   }
 
   // Publish original MultiEchoLaserScan
   if(impl_->echo_pub_){
-    if(impl_->echo_pub_.getNumSubscribers() > 0){
-      impl_->echo_pub_.publish(msg);
-    }
+    // TODO: no way to do this in ros2 yet
+    //if(impl_->echo_pub_.getNumSubscribers() > 0){
+      impl_->echo_pub_->publish(msg);
+    //}
   }
   
   // If needed, publish LaserScans
   for(size_t i = 0; i < impl_->pubs_.size(); i++){
-    if(impl_->pubs_[i].getNumSubscribers() > 0){
+    // no way to do this in ros2 yet
+    //if(impl_->pubs_[i].getNumSubscribers() > 0){
        try{
-        impl_->pubs_[i].publish(impl_->functs_[i](msg));
+        impl_->pubs_[i]->publish(impl_->functs_[i](msg));
       } catch(std::runtime_error& e){
-        ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i].getTopic().c_str(), e.what());
+        //ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i]->get_topic_name().c_str(), e.what());
+        std::cerr << "Could not publish to topic " << impl_->pubs_[i]->get_topic_name() << ": " << e.what() << std::endl;
       }
-    }
+    //}
   }
 }
 
-void LaserPublisher::publish(const sensor_msgs::MultiEchoLaserScanConstPtr& msg) const
+void LaserPublisher::publish(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const
 {
   if (!impl_ || !impl_->isValid()) {
-    ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
+    //ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
+    std::cerr << "Call to publish() on an invalid image_transport::LaserPublisher" << std::endl;
     return;
   }
 
   // Publish original MultiEchoLaserScan
   if(impl_->echo_pub_){
-    impl_->echo_pub_.publish(msg);
+    impl_->echo_pub_->publish(msg);
   }
   
   // If needed, publish LaserScans
   for(size_t i = 0; i < impl_->pubs_.size(); i++){
-    if(impl_->pubs_[i].getNumSubscribers() > 0){
+    // TODO: no way to do this in ros2 yet
+    //if(impl_->pubs_[i].getNumSubscribers() > 0){
        try{
-        impl_->pubs_[i].publish(impl_->functs_[i](*msg));
+        impl_->pubs_[i]->publish(impl_->functs_[i](*msg));
       } catch(std::runtime_error& e){
-        ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i].getTopic().c_str(), e.what());
+        //ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i]->get_topic_name().c_str(), e.what());
+        std::cerr << "Could not publish to topic " << impl_->pubs_[i]->get_topic_name() << ": " << e.what() << std::endl;
       }
-    }
+    //}
   }
 }
 

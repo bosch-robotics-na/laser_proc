@@ -34,9 +34,9 @@
 #ifndef LASER_PROC_H
 #define LASER_PROC_H
 
-#include <sensor_msgs/LaserScan.h>
-#include <sensor_msgs/MultiEchoLaserScan.h>
-#include <sensor_msgs/LaserEcho.h>
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <sensor_msgs/msg/multi_echo_laser_scan.hpp>
+#include <sensor_msgs/msg/laser_echo.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -51,21 +51,21 @@ namespace laser_proc
 
   public:
 
-    static sensor_msgs::LaserScanPtr getFirstScan(const sensor_msgs::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan::SharedPtr getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
-    static sensor_msgs::LaserScanPtr getLastScan(const sensor_msgs::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan::SharedPtr getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
-    static sensor_msgs::LaserScanPtr getMostIntenseScan(const sensor_msgs::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan::SharedPtr getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
   private:
 
-    static void fillLaserScan(const sensor_msgs::MultiEchoLaserScan& msg, sensor_msgs::LaserScan& out);
+    static void fillLaserScan(const sensor_msgs::msg::MultiEchoLaserScan& msg, sensor_msgs::msg::LaserScan& out);
 
-    static size_t getFirstValue(const sensor_msgs::LaserEcho& ranges, float& range);
+    static size_t getFirstValue(const sensor_msgs::msg::LaserEcho& ranges, float& range);
 
-    static size_t getLastValue(const sensor_msgs::LaserEcho& ranges, float& range);
+    static size_t getLastValue(const sensor_msgs::msg::LaserEcho& ranges, float& range);
 
-    static void getMostIntenseValue(const sensor_msgs::LaserEcho& ranges, const sensor_msgs::LaserEcho& intensities, float& range, float& intensity);
+    static void getMostIntenseValue(const sensor_msgs::msg::LaserEcho& ranges, const sensor_msgs::msg::LaserEcho& intensities, float& range, float& intensity);
 
   };
   

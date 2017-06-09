@@ -34,10 +34,11 @@
 #ifndef LASER_PROC_ROS_H
 #define LASER_PROC_ROS_H
 
-#include <ros/ros.h>
+#include <rclcpp/node.hpp>
+#include <rclcpp/subscription.hpp>
 #include <laser_proc/LaserTransport.h>
-#include <sensor_msgs/LaserScan.h>
-#include <sensor_msgs/MultiEchoLaserScan.h>
+#include <sensor_msgs/msg/laser_scan.h>
+#include <sensor_msgs/msg/multi_echo_laser_scan.h>
 #include <boost/thread/mutex.hpp>
 
 namespace laser_proc
@@ -45,13 +46,13 @@ namespace laser_proc
   class LaserProcROS
   {
   public:
-    LaserProcROS(ros::NodeHandle& n, ros::NodeHandle& pnh);
+    LaserProcROS(rclcpp::node::Node::SharedPtr n, rclcpp::node::Node::SharedPtr pnh);
     
     ~LaserProcROS();
 
   private:
 
-    void scanCb(const sensor_msgs::MultiEchoLaserScanConstPtr& msg) const;
+    void scanCb(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const;
 
     /**
      * Callback that is called when there is a new subscriber.
@@ -59,7 +60,7 @@ namespace laser_proc
      * Will not subscribe until we have a subscriber for our LaserScans (lazy subscribing).
      * 
      */
-    void connectCb(const ros::SingleSubscriberPublisher& pub);
+    //void connectCb(const ros::SingleSubscriberPublisher& pub);
 
     /**
      * Callback called when a subscriber unsubscribes.
@@ -67,11 +68,11 @@ namespace laser_proc
      * If all current subscribers of our LaserScans stop listening, stop subscribing (lazy subscribing).
      * 
      */
-    void disconnectCb(const ros::SingleSubscriberPublisher& pub);
+    //void disconnectCb(const ros::SingleSubscriberPublisher& pub);
     
-    ros::NodeHandle nh_; ///< Nodehandle used to subscribe in the connectCb.
+    rclcpp::node::Node::SharedPtr nh_; ///< Nodehandle used to subscribe in the connectCb.
     laser_proc::LaserPublisher pub_; ///< Publisher
-    ros::Subscriber sub_; ///< Multi echo subscriber
+    rclcpp::subscription::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_; ///< Multi echo subscriber
     
     boost::mutex connect_mutex_; ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
   };

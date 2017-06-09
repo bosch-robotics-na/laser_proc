@@ -34,11 +34,12 @@
 #ifndef IMAGE_PROC_LASER_PUBLISHER_H
 #define IMAGE_PROC_LASER_PUBLISHER_H
 
-#include <ros/ros.h>
+#include <rclcpp/node.hpp>
+#include <rclcpp/publisher.hpp>
 
-#include <sensor_msgs/LaserScan.h>
-#include <sensor_msgs/MultiEchoLaserScan.h>
-#include <sensor_msgs/LaserEcho.h>
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <sensor_msgs/msg/multi_echo_laser_scan.hpp>
+#include <sensor_msgs/msg/laser_echo.hpp>
 
 #include <laser_proc/LaserProc.h>
 
@@ -74,12 +75,12 @@ namespace laser_proc
     /*!
      * \brief Publish a MultiEchoLaserScan on the topics associated with this LaserPublisher.
      */
-    void publish(const sensor_msgs::MultiEchoLaserScan& msg) const;
+    void publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const;
 
     /*!
      * \brief Publish a MultiEchoLaserScan on the topics associated with this LaserPublisher.
      */
-    void publish(const sensor_msgs::MultiEchoLaserScanConstPtr& msg) const;
+    void publish(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const;
 
     /*!
      * \brief Shutdown the advertisements associated with this Publisher.
@@ -92,14 +93,14 @@ namespace laser_proc
     bool operator==(const LaserPublisher& rhs) const { return impl_ == rhs.impl_; }
 
   private:
-    LaserPublisher(ros::NodeHandle& nh, uint32_t queue_size,
-                    const ros::SubscriberStatusCallback& connect_cb,
+    LaserPublisher(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+                    /*const ros::SubscriberStatusCallback& connect_cb,
                     const ros::SubscriberStatusCallback& disconnect_cb,
-                    const ros::VoidPtr& tracked_object, bool latch, bool publish_echoes = true);
+                    const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes = true);
     
     struct Impl;
-    typedef boost::shared_ptr<Impl> ImplPtr;
-    typedef boost::weak_ptr<Impl> ImplWPtr;
+    typedef std::shared_ptr<Impl> ImplPtr;
+    typedef std::weak_ptr<Impl> ImplWPtr;
     
     ImplPtr impl_;
 

@@ -35,8 +35,8 @@
 
 using namespace laser_proc;
 
-sensor_msgs::LaserScanPtr LaserProc::getFirstScan(const sensor_msgs::MultiEchoLaserScan& msg){
-  sensor_msgs::LaserScanPtr out(new sensor_msgs::LaserScan());
+sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
   fillLaserScan(msg, *out);
   out->ranges.resize(msg.ranges.size());
   if(msg.ranges.size() == msg.intensities.size()){
@@ -56,8 +56,8 @@ sensor_msgs::LaserScanPtr LaserProc::getFirstScan(const sensor_msgs::MultiEchoLa
   return out;
 }
 
-sensor_msgs::LaserScanPtr LaserProc::getLastScan(const sensor_msgs::MultiEchoLaserScan& msg){
-  sensor_msgs::LaserScanPtr out(new sensor_msgs::LaserScan());
+sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
   fillLaserScan(msg, *out);
   out->ranges.resize(msg.ranges.size());
   if(msg.ranges.size() == msg.intensities.size()){
@@ -76,8 +76,8 @@ sensor_msgs::LaserScanPtr LaserProc::getLastScan(const sensor_msgs::MultiEchoLas
   return out;
 }
 
-sensor_msgs::LaserScanPtr LaserProc::getMostIntenseScan(const sensor_msgs::MultiEchoLaserScan& msg){
-  sensor_msgs::LaserScanPtr out(new sensor_msgs::LaserScan());
+sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
   fillLaserScan(msg, *out);
   if(msg.ranges.size() == msg.intensities.size()){
     out->ranges.resize(msg.ranges.size());
@@ -93,7 +93,7 @@ sensor_msgs::LaserScanPtr LaserProc::getMostIntenseScan(const sensor_msgs::Multi
   return out;
 }
 
-void LaserProc::fillLaserScan(const sensor_msgs::MultiEchoLaserScan& msg, sensor_msgs::LaserScan& out){
+void LaserProc::fillLaserScan(const sensor_msgs::msg::MultiEchoLaserScan& msg, sensor_msgs::msg::LaserScan& out){
   out.header = msg.header;
   out.angle_min = msg.angle_min;
   out.angle_max = msg.angle_max;
@@ -105,7 +105,7 @@ void LaserProc::fillLaserScan(const sensor_msgs::MultiEchoLaserScan& msg, sensor
 }
 
 ///< @TODO I'm assuming all laserscanners/drivers output the ranges in order received (shortest to longest).  If this is not the case, please make an issue.
-size_t LaserProc::getFirstValue(const sensor_msgs::LaserEcho& ranges, float& range){
+size_t LaserProc::getFirstValue(const sensor_msgs::msg::LaserEcho& ranges, float& range){
   if(ranges.echoes.size() > 0){
     size_t index = 0;
     range = ranges.echoes[index];
@@ -117,7 +117,7 @@ size_t LaserProc::getFirstValue(const sensor_msgs::LaserEcho& ranges, float& ran
 }
 
 ///< @TODO I'm assuming all laserscanners/drivers output the ranges in order received (shortest to longest).  If this is not the case, please make an issue.
-size_t LaserProc::getLastValue(const sensor_msgs::LaserEcho& ranges, float& range){
+size_t LaserProc::getLastValue(const sensor_msgs::msg::LaserEcho& ranges, float& range){
   if(ranges.echoes.size() > 0){
     size_t index = ranges.echoes.size()-1;
     range = ranges.echoes[index];
@@ -128,7 +128,7 @@ size_t LaserProc::getLastValue(const sensor_msgs::LaserEcho& ranges, float& rang
   return 0; // Value doesn't matter
 }
 
-void LaserProc::getMostIntenseValue(const sensor_msgs::LaserEcho& ranges, const sensor_msgs::LaserEcho& intensities, float& range, float& intensity){
+void LaserProc::getMostIntenseValue(const sensor_msgs::msg::LaserEcho& ranges, const sensor_msgs::msg::LaserEcho& intensities, float& range, float& intensity){
   if(intensities.echoes.size() == 0){
     range = std::numeric_limits<float>::quiet_NaN();
     intensity = 0.0;

@@ -32,15 +32,16 @@
  */
 
 #include <laser_proc/LaserProcROS.h>
+#include <rclcpp/rclcpp.hpp>
 
 int main(int argc, char **argv){
-  ros::init(argc, argv, "laser_proc");
-  ros::NodeHandle n;
-  ros::NodeHandle pnh("~");
+  rclcpp::init(argc, argv);
+  rclcpp::node::Node::SharedPtr n = rclcpp::node::Node::make_shared("laser_proc");;
+  rclcpp::node::Node::SharedPtr pnh = rclcpp::node::Node::make_shared("~");
   
   laser_proc::LaserProcROS lp(n, pnh);
   
-  ros::spin();
+  rclcpp::spin(n);
 
   return 0;
 }
