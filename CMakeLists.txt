@@ -107,11 +107,14 @@ install(FILES nodelets.xml
 # endif()
 
 ## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+#if(BUILD_TESTING)
+#  find_package(ament_cmake_nose REQUIRED)
+#  ament_add_nose_test(laser_proc_nose_tests test)
+#endif()
 
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(sensor_msgs)
 ament_export_include_directories(${INCLUDE_DIRS})
-ament_export_libraries(laser_proc_library laser_publisher laser_transport laser_proc_ROS LaserProcNodelet)
+ament_export_libraries(laser_proc_library laser_publisher laser_transport laser_proc_ROS LaserProcNodelet ${LIBS})
 
 ament_package()
