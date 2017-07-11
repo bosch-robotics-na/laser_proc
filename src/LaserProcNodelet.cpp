@@ -50,7 +50,7 @@ public:
 private:
   virtual void onInit()
   {
-    rclcpp::node::Node::SharedPtr pn = rclcpp::node::Node::make_shared("~");
+    rclcpp::node::Node::SharedPtr pn = rclcpp::node::Node::make_shared("laser_proc_nodelet");
     lp.reset(new LaserProcROS(rclcpp::node::Node::SharedPtr(this), pn));
   };
   
