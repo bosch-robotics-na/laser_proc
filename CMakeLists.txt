@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(class_loader REQUIRED)
 
 find_package(Boost REQUIRED system)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -33,12 +34,14 @@ set(INCLUDE_DIRS
   include
   ${rclcpp_INCLUDE_DIRS}
   ${sensor_msgs_INCLUDE_DIRS}
+  ${class_loader_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
 
 set(LIBS
   ${rclcpp_LIBRARIES}
   ${sensor_msgs_LIBRARIES}
+  ${class_loader_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 
