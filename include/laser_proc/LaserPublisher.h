@@ -93,7 +93,7 @@ namespace laser_proc
     bool operator==(const LaserPublisher& rhs) const { return impl_ == rhs.impl_; }
 
   private:
-    LaserPublisher(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+    LaserPublisher(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
                     /*const ros::SubscriberStatusCallback& connect_cb,
                     const ros::SubscriberStatusCallback& disconnect_cb,
                     const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes = true);

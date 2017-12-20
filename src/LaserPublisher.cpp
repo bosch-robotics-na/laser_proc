@@ -61,14 +61,14 @@ struct LaserPublisher::Impl
     }
   }
 
-  rclcpp::publisher::Publisher<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr echo_pub_;
-  std::vector<rclcpp::publisher::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr> pubs_;
+  rclcpp::Publisher<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr echo_pub_;
+  std::vector<rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr> pubs_;
   std::vector<PublishFunction> functs_;
   bool unadvertised_;
 };
 
 ///< @TODO Make a static class that creates these
-LaserPublisher::LaserPublisher(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+LaserPublisher::LaserPublisher(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
                                  /*const ros::SubscriberStatusCallback& connect_cb,
                                  const ros::SubscriberStatusCallback& disconnect_cb,
                                  const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes)
