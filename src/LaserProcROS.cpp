@@ -35,7 +35,7 @@
 
 using namespace laser_proc;
   
-LaserProcROS::LaserProcROS(rclcpp::node::Node::SharedPtr n, rclcpp::node::Node::SharedPtr pnh):nh_(n){
+LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pnh):nh_(n){
   boost::mutex::scoped_lock lock(connect_mutex_);
   
   // Lazy subscription to multi echo topic

@@ -38,20 +38,20 @@
 namespace laser_proc
 {
 
-class LaserProcNodelet : public rclcpp::node::Node
+class LaserProcNodelet : public rclcpp::Node
 {
 public:
   LaserProcNodelet()
     :
-    rclcpp::node::Node("laser_proc_nodelet")  {};
+    rclcpp::Node("laser_proc_nodelet")  {};
 
   ~LaserProcNodelet() {}
 
 private:
   virtual void onInit()
   {
-    rclcpp::node::Node::SharedPtr pn = rclcpp::node::Node::make_shared("laser_proc_nodelet");
-    lp.reset(new LaserProcROS(rclcpp::node::Node::SharedPtr(this), pn));
+    auto pn = rclcpp::Node::make_shared("laser_proc_nodelet");
+    lp.reset(new LaserProcROS(rclcpp::Node::SharedPtr(this), pn));
   };
   
   boost::shared_ptr<LaserProcROS> lp;
@@ -62,5 +62,5 @@ private:
 //#include <pluginlib/class_list_macros.h>
 //PLUGINLIB_DECLARE_CLASS(laser_proc, LaserProcNodelet, laser_proc::LaserProcNodelet, nodelet::Nodelet);
 #include "class_loader/class_loader_register_macro.h"
-CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::node::Node);
+CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::Node);
 

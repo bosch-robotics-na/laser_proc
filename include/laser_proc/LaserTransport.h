@@ -43,7 +43,7 @@ namespace laser_proc
   class LaserTransport
   {
       public:
-        static LaserPublisher advertiseLaser(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+        static LaserPublisher advertiseLaser(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
                         /*const ros::SubscriberStatusCallback& connect_cb,
                         const ros::SubscriberStatusCallback& disconnect_cb=ros::SubscriberStatusCallback(),
                         const ros::VoidPtr& tracked_object=ros::VoidPtr(), bool latch=false, */bool publish_echoes=true);

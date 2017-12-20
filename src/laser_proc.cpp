@@ -36,8 +36,8 @@
 
 int main(int argc, char **argv){
   rclcpp::init(argc, argv);
-  rclcpp::node::Node::SharedPtr n = rclcpp::node::Node::make_shared("laser_proc");;
-  rclcpp::node::Node::SharedPtr pnh = rclcpp::node::Node::make_shared("laser_proc");
+  auto n = rclcpp::Node::make_shared("laser_proc");;
+  auto pnh = rclcpp::Node::make_shared("laser_proc");
   
   laser_proc::LaserProcROS lp(n, pnh);
   

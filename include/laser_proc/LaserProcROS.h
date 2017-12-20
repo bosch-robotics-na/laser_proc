@@ -46,7 +46,7 @@ namespace laser_proc
   class LaserProcROS
   {
   public:
-    LaserProcROS(rclcpp::node::Node::SharedPtr n, rclcpp::node::Node::SharedPtr pnh);
+    LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pnh);
     
     ~LaserProcROS();
 
@@ -70,9 +70,9 @@ namespace laser_proc
      */
     //void disconnectCb(const ros::SingleSubscriberPublisher& pub);
     
-    rclcpp::node::Node::SharedPtr nh_; ///< Nodehandle used to subscribe in the connectCb.
+    rclcpp::Node::SharedPtr nh_; ///< Nodehandle used to subscribe in the connectCb.
     laser_proc::LaserPublisher pub_; ///< Publisher
-    rclcpp::subscription::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_; ///< Multi echo subscriber
+    rclcpp::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_; ///< Multi echo subscriber
     
     boost::mutex connect_mutex_; ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
   };

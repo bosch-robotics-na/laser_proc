@@ -35,7 +35,7 @@
 
 namespace laser_proc {
 
-LaserPublisher LaserTransport::advertiseLaser(rclcpp::node::Node::SharedPtr& nh, uint32_t queue_size,
+LaserPublisher LaserTransport::advertiseLaser(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
                                               /*const ros::SubscriberStatusCallback& connect_cb,
                                               const ros::SubscriberStatusCallback& disconnect_cb,
                                               const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes){
