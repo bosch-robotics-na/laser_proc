@@ -42,7 +42,7 @@ LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pn
   pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10);
 
   std::function<void(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr)> callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
-  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", 10, callback);
+  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", callback, 10);
 }
 
 LaserProcROS::~LaserProcROS(){
