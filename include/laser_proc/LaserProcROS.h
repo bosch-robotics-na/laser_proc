@@ -52,7 +52,7 @@ namespace laser_proc
 
   private:
 
-    void scanCb(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const;
+    void scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const;
 
     /**
      * Callback that is called when there is a new subscriber.

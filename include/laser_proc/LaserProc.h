@@ -51,11 +51,11 @@ namespace laser_proc
 
   public:
 
-    static sensor_msgs::msg::LaserScan::SharedPtr getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
-    static sensor_msgs::msg::LaserScan::SharedPtr getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
-    static sensor_msgs::msg::LaserScan::SharedPtr getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
+    static sensor_msgs::msg::LaserScan getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg);
 
   private:
 

@@ -41,8 +41,8 @@ LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pn
   // Lazy subscription to multi echo topic
   pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10);
 
-  std::function<void(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr)> callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
-  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", callback, 10);
+  std::function<void(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr)> callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
+  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", 10, callback);
 }
 
 LaserProcROS::~LaserProcROS(){
@@ -50,7 +50,7 @@ LaserProcROS::~LaserProcROS(){
 
 
 
-void LaserProcROS::scanCb(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const{
+void LaserProcROS::scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const{
   pub_.publish(msg);
 }
 

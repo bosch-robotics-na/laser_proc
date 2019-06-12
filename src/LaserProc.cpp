@@ -35,60 +35,60 @@
 
 using namespace laser_proc;
 
-sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
-  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
-  fillLaserScan(msg, *out);
-  out->ranges.resize(msg.ranges.size());
+sensor_msgs::msg::LaserScan LaserProc::getFirstScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan out;
+  fillLaserScan(msg, out);
+  out.ranges.resize(msg.ranges.size());
   if(msg.ranges.size() == msg.intensities.size()){
-    out->intensities.resize(msg.intensities.size());
+    out.intensities.resize(msg.intensities.size());
   }
 
-  for(size_t i = 0; i < out->ranges.size(); i++){
-    size_t index = getFirstValue(msg.ranges[i], out->ranges[i]);
-    if(out->intensities.size() > 0){
+  for(size_t i = 0; i < out.ranges.size(); i++){
+    size_t index = getFirstValue(msg.ranges[i], out.ranges[i]);
+    if(out.intensities.size() > 0){
       if(msg.intensities[i].echoes.size() > 0){
-        out->intensities[i] = msg.intensities[i].echoes[index];
+        out.intensities[i] = msg.intensities[i].echoes[index];
       } else {
-        out->intensities[i] = 0.0;
+        out.intensities[i] = 0.0;
       }
     }
   }
   return out;
 }
 
-sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
-  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
-  fillLaserScan(msg, *out);
-  out->ranges.resize(msg.ranges.size());
+sensor_msgs::msg::LaserScan LaserProc::getLastScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan out;
+  fillLaserScan(msg, out);
+  out.ranges.resize(msg.ranges.size());
   if(msg.ranges.size() == msg.intensities.size()){
-    out->intensities.resize(msg.intensities.size());
+    out.intensities.resize(msg.intensities.size());
   }
-  for(size_t i = 0; i < out->ranges.size(); i++){
-    size_t index = getLastValue(msg.ranges[i], out->ranges[i]);
-    if(out->intensities.size() > 0){
+  for(size_t i = 0; i < out.ranges.size(); i++){
+    size_t index = getLastValue(msg.ranges[i], out.ranges[i]);
+    if(out.intensities.size() > 0){
       if(msg.intensities[i].echoes.size() > 0){
-        out->intensities[i] = msg.intensities[i].echoes[index];
+        out.intensities[i] = msg.intensities[i].echoes[index];
       } else {
-        out->intensities[i] = 0.0;
+        out.intensities[i] = 0.0;
       }
     }
   }
   return out;
 }
 
-sensor_msgs::msg::LaserScan::SharedPtr LaserProc::getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
-  sensor_msgs::msg::LaserScan::SharedPtr out(new sensor_msgs::msg::LaserScan());
-  fillLaserScan(msg, *out);
+sensor_msgs::msg::LaserScan LaserProc::getMostIntenseScan(const sensor_msgs::msg::MultiEchoLaserScan& msg){
+  sensor_msgs::msg::LaserScan out;
+  fillLaserScan(msg, out);
   if(msg.ranges.size() == msg.intensities.size()){
-    out->ranges.resize(msg.ranges.size());
-    out->intensities.resize(msg.intensities.size());
+    out.ranges.resize(msg.ranges.size());
+    out.intensities.resize(msg.intensities.size());
   } else {
     std::stringstream ss;
     ss << "getMostIntenseScan::Size of ranges does not equal size of intensities, cannot create scan.";
     throw std::runtime_error(ss.str());
   }
-  for(size_t i = 0; i < out->intensities.size(); i++){
-    getMostIntenseValue(msg.ranges[i], msg.intensities[i], out->ranges[i], out->intensities[i]);
+  for(size_t i = 0; i < out.intensities.size(); i++){
+    getMostIntenseValue(msg.ranges[i], msg.intensities[i], out.ranges[i], out.intensities[i]);
   }
   return out;
 }
