@@ -117,35 +117,35 @@ std::vector<std::string> LaserPublisher::getTopics() const
   return topics;
 }
 
-//void LaserPublisher::publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const
-//{
-//  if (!impl_ || !impl_->isValid()) {
-//    //ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
-//    std::cerr << "Call to publish() on an invalid image_transport::LaserPublisher" << std::endl;
-//    return;
-//  }
-//
-//  // Publish original MultiEchoLaserScan
-//  if(impl_->echo_pub_){
-//    // TODO: no way to do this in ros2 yet
-//    //if(impl_->echo_pub_.getNumSubscribers() > 0){
-//      impl_->echo_pub_->publish(msg);
-//    //}
-//  }
-//  
-//  // If needed, publish LaserScans
-//  for(size_t i = 0; i < impl_->pubs_.size(); i++){
-//    // no way to do this in ros2 yet
-//    //if(impl_->pubs_[i].getNumSubscribers() > 0){
-//       try{
-//        impl_->pubs_[i]->publish(impl_->functs_[i](msg));
-//      } catch(std::runtime_error& e){
-//        //ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i]->get_topic_name().c_str(), e.what());
-//        std::cerr << "Could not publish to topic " << impl_->pubs_[i]->get_topic_name() << ": " << e.what() << std::endl;
-//      }
-//    //}
-//  }
-//}
+void LaserPublisher::publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const
+{
+  if (!impl_ || !impl_->isValid()) {
+    //ROS_ASSERT_MSG(false, "Call to publish() on an invalid image_transport::LaserPublisher");
+    std::cerr << "Call to publish() on an invalid image_transport::LaserPublisher" << std::endl;
+    return;
+  }
+
+  // Publish original MultiEchoLaserScan
+  if(impl_->echo_pub_){
+    // TODO: no way to do this in ros2 yet
+    //if(impl_->echo_pub_.getNumSubscribers() > 0){
+      impl_->echo_pub_->publish(msg);
+    //}
+  }
+  
+  // If needed, publish LaserScans
+  for(size_t i = 0; i < impl_->pubs_.size(); i++){
+    // no way to do this in ros2 yet
+    //if(impl_->pubs_[i].getNumSubscribers() > 0){
+       try{
+        impl_->pubs_[i]->publish(impl_->functs_[i](msg));
+      } catch(std::runtime_error& e){
+        //ROS_ERROR_THROTTLE(1.0, "Could not publish to topic %s: %s", impl_->pubs_[i]->get_topic_name().c_str(), e.what());
+        std::cerr << "Could not publish to topic " << impl_->pubs_[i]->get_topic_name() << ": " << e.what() << std::endl;
+      }
+    //}
+  }
+}
 
 void LaserPublisher::publish(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr msg) const
 {

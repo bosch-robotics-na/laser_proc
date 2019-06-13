@@ -75,7 +75,7 @@ namespace laser_proc
     /*!
      * \brief Publish a MultiEchoLaserScan on the topics associated with this LaserPublisher.
      */
-    //void publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const;
+    void publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) const;
 
     /*!
      * \brief Publish a MultiEchoLaserScan on the topics associated with this LaserPublisher.
