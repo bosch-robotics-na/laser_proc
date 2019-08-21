@@ -61,4 +61,3 @@ private:
 //PLUGINLIB_DECLARE_CLASS(laser_proc, LaserProcNodelet, laser_proc::LaserProcNodelet, nodelet::Nodelet);
 #include "class_loader/register_macro.hpp"
 CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::Node);
-
