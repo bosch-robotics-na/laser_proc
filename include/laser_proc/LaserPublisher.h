@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -97,16 +97,16 @@ namespace laser_proc
                     /*const ros::SubscriberStatusCallback& connect_cb,
                     const ros::SubscriberStatusCallback& disconnect_cb,
                     const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes = true);
-    
+
     struct Impl;
     typedef std::shared_ptr<Impl> ImplPtr;
     typedef std::weak_ptr<Impl> ImplWPtr;
-    
+
     ImplPtr impl_;
 
     friend class LaserTransport;
   };
-  
+
 }; // laser_proc
 
 #endif

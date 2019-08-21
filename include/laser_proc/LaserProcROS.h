@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -39,15 +39,14 @@
 #include <laser_proc/LaserTransport.h>
 #include <sensor_msgs/msg/laser_scan.h>
 #include <sensor_msgs/msg/multi_echo_laser_scan.h>
-#include <boost/thread/mutex.hpp>
 
 namespace laser_proc
-{ 
+{
   class LaserProcROS
   {
   public:
-    LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pnh);
-    
+    LaserProcROS(rclcpp::Node::SharedPtr);
+
     ~LaserProcROS();
 
   private:
@@ -56,28 +55,26 @@ namespace laser_proc
 
     /**
      * Callback that is called when there is a new subscriber.
-     * 
+     *
      * Will not subscribe until we have a subscriber for our LaserScans (lazy subscribing).
-     * 
+     *
      */
     //void connectCb(const ros::SingleSubscriberPublisher& pub);
 
     /**
      * Callback called when a subscriber unsubscribes.
-     * 
+     *
      * If all current subscribers of our LaserScans stop listening, stop subscribing (lazy subscribing).
-     * 
+     *
      */
     //void disconnectCb(const ros::SingleSubscriberPublisher& pub);
-    
+
     rclcpp::Node::SharedPtr nh_; ///< Nodehandle used to subscribe in the connectCb.
     laser_proc::LaserPublisher pub_; ///< Publisher
     rclcpp::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_; ///< Multi echo subscriber
-    
-    boost::mutex connect_mutex_; ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
+
+    std::mutex connect_mutex_; ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
   };
-  
-  
 }; // depthimage_to_laserscan
 
 #endif

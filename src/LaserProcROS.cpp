@@ -27,28 +27,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
 #include <laser_proc/LaserProcROS.h>
 
 using namespace laser_proc;
-  
-LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n, rclcpp::Node::SharedPtr pnh):nh_(n){
-  boost::mutex::scoped_lock lock(connect_mutex_);
-  
+
+LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n):nh_(n){
+  std::lock_guard<std::mutex> lock(connect_mutex_);
+
   // Lazy subscription to multi echo topic
   pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10);
 
-  std::function<void(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr)> callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
+  auto callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
   sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", 10, callback);
 }
 
 LaserProcROS::~LaserProcROS(){
 }
-
-
 
 void LaserProcROS::scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const{
   pub_.publish(msg);

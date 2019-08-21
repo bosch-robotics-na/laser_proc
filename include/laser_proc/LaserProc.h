@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -45,7 +45,7 @@
 #include <sstream>
 
 namespace laser_proc
-{ 
+{
   class LaserProc
   {
 
@@ -68,8 +68,6 @@ namespace laser_proc
     static void getMostIntenseValue(const sensor_msgs::msg::LaserEcho& ranges, const sensor_msgs::msg::LaserEcho& intensities, float& range, float& intensity);
 
   };
-  
-  
 }; // laser_proc
 
 #endif

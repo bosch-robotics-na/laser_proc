@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -40,9 +40,8 @@ typedef sensor_msgs::msg::LaserScan (*PublishFunction)(const sensor_msgs::msg::M
 struct LaserPublisher::Impl
 {
   Impl()
-    : unadvertised_(false)
-  {
-  }
+  : unadvertised_(false)
+  {}
 
   ~Impl()
   {
@@ -53,7 +52,7 @@ struct LaserPublisher::Impl
   {
     return !unadvertised_;
   }
-  
+
   void shutdown()
   {
     if (!unadvertised_) {
@@ -132,7 +131,7 @@ void LaserPublisher::publish(const sensor_msgs::msg::MultiEchoLaserScan& msg) co
       impl_->echo_pub_->publish(msg);
     //}
   }
-  
+
   // If needed, publish LaserScans
   for(size_t i = 0; i < impl_->pubs_.size(); i++){
     // no way to do this in ros2 yet
@@ -160,7 +159,7 @@ void LaserPublisher::publish(sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPt
   if(impl_->echo_pub_){
     impl_->echo_pub_->publish(m);
   }
-  
+
   // If needed, publish LaserScans
   for(size_t i = 0; i < impl_->pubs_.size(); i++){
     // TODO: no way to do this in ros2 yet
@@ -189,4 +188,3 @@ LaserPublisher::operator void*() const
 }
 
 } //namespace laser_proc
-

@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -39,7 +39,7 @@
 #include <laser_proc/LaserPublisher.h>
 
 namespace laser_proc
-{ 
+{
   class LaserTransport
   {
       public:
@@ -49,7 +49,7 @@ namespace laser_proc
                         const ros::VoidPtr& tracked_object=ros::VoidPtr(), bool latch=false, */bool publish_echoes=true);
 
   };
-  
+
 }; // laser_proc
 
 #endif

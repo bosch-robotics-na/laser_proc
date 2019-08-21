@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
@@ -36,11 +36,10 @@
 
 int main(int argc, char **argv){
   rclcpp::init(argc, argv);
-  auto n = rclcpp::Node::make_shared("laser_proc");;
-  auto pnh = rclcpp::Node::make_shared("laser_proc");
-  
-  laser_proc::LaserProcROS lp(n, pnh);
-  
+  auto n = rclcpp::Node::make_shared("laser_proc");
+
+  laser_proc::LaserProcROS lp(n);
+
   rclcpp::spin(n);
 
   return 0;
