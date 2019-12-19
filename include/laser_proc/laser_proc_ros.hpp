@@ -31,50 +31,55 @@
  * Author: Chad Rockey
  */
 
-#ifndef LASER_PROC_ROS_H
-#define LASER_PROC_ROS_H
+#ifndef LASER_PROC__LASER_PROC_ROS_HPP_
+#define LASER_PROC__LASER_PROC_ROS_HPP_
 
-#include <rclcpp/node.hpp>
-#include <rclcpp/subscription.hpp>
-#include <laser_proc/LaserTransport.h>
-#include <sensor_msgs/msg/laser_scan.h>
-#include <sensor_msgs/msg/multi_echo_laser_scan.h>
+#include "laser_proc/laser_transport.hpp"
+
+#include "rclcpp/node.hpp"
+#include "rclcpp/subscription.hpp"
+
+#include "sensor_msgs/msg/laser_scan.hpp"
+#include "sensor_msgs/msg/multi_echo_laser_scan.hpp"
 
 namespace laser_proc
 {
-  class LaserProcROS
-  {
-  public:
-    LaserProcROS(rclcpp::Node::SharedPtr);
+class LaserProcROS
+{
+public:
+  explicit LaserProcROS(rclcpp::Node::SharedPtr);
 
-    ~LaserProcROS();
+  ~LaserProcROS() = default;
 
-  private:
+private:
+  void scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const;
 
-    void scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const;
+  /**
+   * Callback that is called when there is a new subscriber.
+   *
+   * Will not subscribe until we have a subscriber for our LaserScans (lazy subscribing).
+   *
+   */
+  // void connectCb(const ros::SingleSubscriberPublisher& pub);
 
-    /**
-     * Callback that is called when there is a new subscriber.
-     *
-     * Will not subscribe until we have a subscriber for our LaserScans (lazy subscribing).
-     *
-     */
-    //void connectCb(const ros::SingleSubscriberPublisher& pub);
+  /**
+   * Callback called when a subscriber unsubscribes.
+   *
+   * If all current subscribers of our LaserScans stop listening,
+   * stop subscribing (lazy subscribing).
+   *
+   */
+  // void disconnectCb(const ros::SingleSubscriberPublisher& pub);
 
-    /**
-     * Callback called when a subscriber unsubscribes.
-     *
-     * If all current subscribers of our LaserScans stop listening, stop subscribing (lazy subscribing).
-     *
-     */
-    //void disconnectCb(const ros::SingleSubscriberPublisher& pub);
+  ///< Nodehandle used to subscribe in the connectCb
+  rclcpp::Node::SharedPtr nh_;
+  ///< Publisher
+  laser_proc::LaserPublisher pub_;
+  ///< Multi echo subscriber
+  rclcpp::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_;
+  ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
+  std::mutex connect_mutex_;
+};
+}  // namespace laser_proc
 
-    rclcpp::Node::SharedPtr nh_; ///< Nodehandle used to subscribe in the connectCb.
-    laser_proc::LaserPublisher pub_; ///< Publisher
-    rclcpp::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr sub_; ///< Multi echo subscriber
-
-    std::mutex connect_mutex_; ///< Prevents the connectCb and disconnectCb from being called until everything is initialized.
-  };
-}; // depthimage_to_laserscan
-
-#endif
+#endif  // LASER_PROC__LASER_PROC_ROS_HPP_

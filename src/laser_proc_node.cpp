@@ -31,33 +31,18 @@
  * Author: Chad Rockey
  */
 
-#include <laser_proc/LaserProcROS.h>
-#include <rclcpp/node.hpp>
+#include "laser_proc/laser_proc_ros.hpp"
 
-namespace laser_proc
+#include "rclcpp/rclcpp.hpp"
+
+int main(int argc, char ** argv)
 {
+  rclcpp::init(argc, argv);
+  auto n = rclcpp::Node::make_shared("laser_proc");
 
-class LaserProcNodelet : public rclcpp::Node
-{
-public:
-  LaserProcNodelet()
-  : rclcpp::Node("laser_proc_nodelet")
-  {}
+  laser_proc::LaserProcROS lp(n);
 
-  ~LaserProcNodelet() {}
+  rclcpp::spin(n);
 
-private:
-  virtual void onInit()
-  {
-    lp.reset(new LaserProcROS(shared_from_this()));
-  };
-
-  std::shared_ptr<LaserProcROS> lp;
-};
-
+  return 0;
 }
-
-//#include <pluginlib/class_list_macros.h>
-//PLUGINLIB_DECLARE_CLASS(laser_proc, LaserProcNodelet, laser_proc::LaserProcNodelet, nodelet::Nodelet);
-#include "class_loader/register_macro.hpp"
-CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::Node);

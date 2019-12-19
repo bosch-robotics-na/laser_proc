@@ -31,25 +31,41 @@
  * Author: Chad Rockey
  */
 
-#ifndef IMAGE_PROC_LASER_TRANSPORT_H
-#define IMAGE_PROC_LASER_TRANSPORT_H
+#include "laser_proc/laser_proc_ros.hpp"
 
-#include <rclcpp/node.hpp>
+using namespace laser_proc;  // NOLINT
 
-#include <laser_proc/LaserPublisher.h>
-
-namespace laser_proc
+LaserProcROS::LaserProcROS(rclcpp::Node::SharedPtr n)
+: nh_(n)
 {
-  class LaserTransport
-  {
-      public:
-        static LaserPublisher advertiseLaser(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
-                        /*const ros::SubscriberStatusCallback& connect_cb,
-                        const ros::SubscriberStatusCallback& disconnect_cb=ros::SubscriberStatusCallback(),
-                        const ros::VoidPtr& tracked_object=ros::VoidPtr(), bool latch=false, */bool publish_echoes=true);
+  std::lock_guard<std::mutex> lock(connect_mutex_);
 
-  };
+  // Lazy subscription to multi echo topic
+  pub_ = laser_proc::LaserTransport::advertiseLaser(n, 10);
 
-}; // laser_proc
+  auto callback = std::bind(&LaserProcROS::scanCb, this, std::placeholders::_1);
+  sub_ = n->create_subscription<sensor_msgs::msg::MultiEchoLaserScan>("echoes", 10, callback);
+}
 
-#endif
+void LaserProcROS::scanCb(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg) const
+{
+  pub_.publish(msg);
+}
+
+/*
+void LaserProcROS::connectCb(const ros::SingleSubscriberPublisher& pub){
+  boost::mutex::scoped_lock lock(connect_mutex_);
+  if (!sub_ && pub_.getNumSubscribers() > 0) {
+    ROS_DEBUG("Connecting to multi echo topic.");
+    sub_ = nh_.subscribe("echoes", 10, &LaserProcROS::scanCb, this);
+  }
+}
+
+void LaserProcROS::disconnectCb(const ros::SingleSubscriberPublisher& pub){
+  boost::mutex::scoped_lock lock(connect_mutex_);
+  if (pub_.getNumSubscribers() == 0) {
+    ROS_DEBUG("Unsubscribing from multi echo topic.");
+    sub_.shutdown();
+  }
+}
+*/

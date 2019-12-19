@@ -27,20 +27,53 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * Author: Chad Rockey
  */
 
-#include <laser_proc/LaserTransport.h>
+#ifndef LASER_PROC__LASER_PROC_HPP_
+#define LASER_PROC__LASER_PROC_HPP_
 
-namespace laser_proc {
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
+#include <sstream>
+#include <vector>
 
-LaserPublisher LaserTransport::advertiseLaser(rclcpp::Node::SharedPtr& nh, uint32_t queue_size,
-                                              /*const ros::SubscriberStatusCallback& connect_cb,
-                                              const ros::SubscriberStatusCallback& disconnect_cb,
-                                              const ros::VoidPtr& tracked_object, bool latch, */bool publish_echoes){
-  return LaserPublisher(nh, queue_size, /*connect_cb, disconnect_cb, tracked_object, latch,*/ publish_echoes);
-}
+#include "sensor_msgs/msg/laser_scan.hpp"
+#include "sensor_msgs/msg/multi_echo_laser_scan.hpp"
+#include "sensor_msgs/msg/laser_echo.hpp"
 
-} //namespace laser_proc
+namespace laser_proc
+{
+class LaserProc
+{
+public:
+  static sensor_msgs::msg::LaserScan getFirstScan(
+    const sensor_msgs::msg::MultiEchoLaserScan & msg);
 
+  static sensor_msgs::msg::LaserScan getLastScan(
+    const sensor_msgs::msg::MultiEchoLaserScan & msg);
+
+  static sensor_msgs::msg::LaserScan getMostIntenseScan(
+    const sensor_msgs::msg::MultiEchoLaserScan & msg);
+
+private:
+  static void fillLaserScan(
+    const sensor_msgs::msg::MultiEchoLaserScan & msg, sensor_msgs::msg::LaserScan & out);
+
+  static size_t getFirstValue(
+    const sensor_msgs::msg::LaserEcho & ranges, float & range);
+
+  static size_t getLastValue(
+    const sensor_msgs::msg::LaserEcho & ranges, float & range);
+
+  static void getMostIntenseValue(
+    const sensor_msgs::msg::LaserEcho & ranges,
+    const sensor_msgs::msg::LaserEcho & intensities,
+    float & range,
+    float & intensity);
+};
+}  // namespace laser_proc
+
+#endif  // LASER_PROC__LASER_PROC_HPP_
