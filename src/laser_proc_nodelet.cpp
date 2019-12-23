@@ -59,4 +59,4 @@ private:
 }  // namespace laser_proc
 
 #include "class_loader/register_macro.hpp"
-CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::Node);
+CLASS_LOADER_REGISTER_CLASS(laser_proc::LaserProcNodelet, rclcpp::Node)
