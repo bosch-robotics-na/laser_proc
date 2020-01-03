@@ -27,12 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Author: Chad Rockey
- */
+#ifndef LASER_PROC__LASER_PROC_COMPONENT_HPP_
+#define LASER_PROC__LASER_PROC_COMPONENT_HPP_
 
-#ifndef LASER_PROC__LASER_TRANSPORT_HPP_
-#define LASER_PROC__LASER_TRANSPORT_HPP_
+#include <memory>
 
 #include "laser_proc/laser_publisher.hpp"
 
@@ -40,16 +38,15 @@
 
 namespace laser_proc
 {
-class LaserTransport
+class LaserProcComponent : public rclcpp::Node
 {
 public:
-  static LaserPublisher advertiseLaser(
-    rclcpp::Node::SharedPtr & nh, uint32_t queue_size,
-    /* const ros::SubscriberStatusCallback& connect_cb,
-    const ros::SubscriberStatusCallback& disconnect_cb = ros::SubscriberStatusCallback(),
-    const ros::VoidPtr& tracked_object = ros::VoidPtr(), bool latch = false, */
-    bool publish_echoes = true);
+  explicit LaserProcComponent(const rclcpp::NodeOptions & node_options = rclcpp::NodeOptions());
+
+private:
+  laser_proc::LaserPublisher laser_publisher_;
+  rclcpp::Subscription<sensor_msgs::msg::MultiEchoLaserScan>::SharedPtr laser_subscription_;
 };
 }  // namespace laser_proc
 
-#endif  // LASER_PROC__LASER_TRANSPORT_HPP_
+#endif  // LASER_PROC__LASER_PROC_COMPONENT_HPP_

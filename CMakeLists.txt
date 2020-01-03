@@ -12,12 +12,13 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 add_library(laser_proc
   src/laser_proc.cpp
   src/laser_publisher.cpp
-  src/laser_transport.cpp)
+)
 target_include_directories(laser_proc
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -28,45 +29,21 @@ ament_target_dependencies(laser_proc
   sensor_msgs
 )
 
-## ROS Library
-add_library(laser_proc_ros src/laser_proc_ros.cpp)
-target_link_libraries(laser_proc_ros laser_proc)
-target_include_directories(laser_proc_ros
-  PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-ament_target_dependencies(laser_proc_ros
-  rclcpp
-  sensor_msgs
-)
-
-## Nodelet wrapper
-add_library(laser_proc_nodelet src/laser_proc_nodelet.cpp)
-target_link_libraries(laser_proc_nodelet laser_proc)
-ament_target_dependencies(laser_proc_nodelet
+## Laser Proc component
+add_library(laser_proc_component SHARED src/laser_proc_component.cpp)
+target_link_libraries(laser_proc_component laser_proc)
+ament_target_dependencies(laser_proc_component
   class_loader
 )
-
-## Node wrapper
-add_executable(laser_proc_node src/laser_proc_node.cpp)
-target_include_directories(laser_proc_node
-  PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-target_link_libraries(laser_proc_node laser_proc_ros)
-ament_target_dependencies(laser_proc_node
-  sensor_msgs
+rclcpp_components_register_node(laser_proc_component
+  PLUGIN "laser_proc::LaserProcComponent"
+  EXECUTABLE laser_proc_node
 )
 
-install(TARGETS laser_proc laser_proc_ros laser_proc_nodelet laser_proc
+install(TARGETS laser_proc laser_proc_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-)
-install(TARGETS laser_proc_node
-  RUNTIME DESTINATION lib/${PROJECT_NAME}/
 )
 
 install(DIRECTORY include/
@@ -82,6 +59,6 @@ endif()
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(sensor_msgs)
 ament_export_include_directories(include)
-ament_export_libraries(laser_proc laser_proc_ros laser_proc_nodelet)
+ament_export_libraries(laser_proc)
 
 ament_package()

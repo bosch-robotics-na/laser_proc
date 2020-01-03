@@ -31,7 +31,10 @@
  * Author: Chad Rockey
  */
 
+#include <algorithm>
 #include <limits>
+#include <stdexcept>
+#include <sstream>
 #include <vector>
 
 #include "laser_proc/laser_proc.hpp"

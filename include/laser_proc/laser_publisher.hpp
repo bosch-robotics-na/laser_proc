@@ -34,32 +34,27 @@
 #ifndef LASER_PROC__LASER_PUBLISHER_HPP_
 #define LASER_PROC__LASER_PUBLISHER_HPP_
 
-#include <algorithm>
-#include <limits>
 #include <memory>
-#include <stdexcept>
 #include <string>
-#include <sstream>
 #include <vector>
 
-#include "laser_proc/laser_proc.hpp"
-
 #include "rclcpp/node.hpp"
-#include "rclcpp/publisher.hpp"
 
-#include "sensor_msgs/msg/laser_scan.hpp"
 #include "sensor_msgs/msg/multi_echo_laser_scan.hpp"
-#include "sensor_msgs/msg/laser_echo.hpp"
 
 namespace laser_proc
 {
 
-class LaserTransport;
-
 class LaserPublisher
 {
 public:
-  LaserPublisher() = default;
+  LaserPublisher(
+    rclcpp::Node::SharedPtr & nh, uint32_t queue_size, bool publish_echoes = true);
+
+  LaserPublisher(
+    std::shared_ptr<rclcpp::node_interfaces::NodeTopicsInterface> topics_interface,
+    uint32_t queue_size,
+    bool publish_echoes = true);
 
   /*!
    * \brief Returns the number of subscribers that are currently connected to
@@ -95,20 +90,11 @@ public:
   bool operator==(const LaserPublisher & rhs) const {return impl_ == rhs.impl_;}
 
 private:
-  LaserPublisher(
-    rclcpp::Node::SharedPtr & nh, uint32_t queue_size,
-    /* const ros::SubscriberStatusCallback& connect_cb,
-    const ros::SubscriberStatusCallback& disconnect_cb,
-    const ros::VoidPtr& tracked_object, bool latch, */
-    bool publish_echoes = true);
-
   struct Impl;
   typedef std::shared_ptr<Impl> ImplPtr;
   typedef std::weak_ptr<Impl> ImplWPtr;
 
   ImplPtr impl_;
-
-  friend class LaserTransport;
 };
 }  // namespace laser_proc
 

@@ -31,18 +31,20 @@
  * Author: Chad Rockey
  */
 
-#include "laser_proc/laser_proc_ros.hpp"
+#include <functional>
+
+#include "laser_proc/laser_proc_component.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  auto n = rclcpp::Node::make_shared("laser_proc");
 
-  laser_proc::LaserProcROS lp(n);
+  laser_proc::LaserProcComponent laser_proc;
 
-  rclcpp::spin(n);
+  rclcpp::spin(laser_proc);
 
+  rclcpp::shutdown();
   return 0;
 }
