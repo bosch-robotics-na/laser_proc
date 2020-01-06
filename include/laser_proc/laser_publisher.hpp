@@ -48,10 +48,10 @@ namespace laser_proc
 class LaserPublisher
 {
 public:
-  LaserPublisher(
+  explicit LaserPublisher(
     rclcpp::Node::SharedPtr & nh, uint32_t queue_size, bool publish_echoes = true);
 
-  LaserPublisher(
+  explicit LaserPublisher(
     std::shared_ptr<rclcpp::node_interfaces::NodeTopicsInterface> topics_interface,
     uint32_t queue_size,
     bool publish_echoes = true);

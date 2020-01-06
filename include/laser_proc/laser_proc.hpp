@@ -34,9 +34,9 @@
 #ifndef LASER_PROC__LASER_PROC_HPP_
 #define LASER_PROC__LASER_PROC_HPP_
 
+#include "sensor_msgs/msg/laser_echo.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 #include "sensor_msgs/msg/multi_echo_laser_scan.hpp"
-#include "sensor_msgs/msg/laser_echo.hpp"
 
 namespace laser_proc
 {

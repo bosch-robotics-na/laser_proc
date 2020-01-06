@@ -39,7 +39,8 @@
 
 #include "laser_proc/laser_proc.hpp"
 
-using namespace laser_proc;  // NOLINT
+namespace laser_proc
+{
 
 sensor_msgs::msg::LaserScan LaserProc::getFirstScan(
   const sensor_msgs::msg::MultiEchoLaserScan & msg)
@@ -97,7 +98,7 @@ sensor_msgs::msg::LaserScan LaserProc::getMostIntenseScan(
     std::stringstream ss;
     ss <<
       "getMostIntenseScan::Size of ranges does not equal size of intensities, cannot create scan.";
-    throw std::runtime_error(ss.str());
+    fprintf(stderr, "%s\n", ss.str().c_str());
   }
   for (size_t i = 0; i < out.intensities.size(); i++) {
     getMostIntenseValue(msg.ranges[i], msg.intensities[i], out.ranges[i], out.intensities[i]);
@@ -173,3 +174,5 @@ void LaserProc::getMostIntenseValue(
     return;
   }
 }
+
+}  // namespace laser_proc
